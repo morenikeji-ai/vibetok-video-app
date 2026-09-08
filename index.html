@@ -1,0 +1,2319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>VibeTok | Share Your World</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <!-- Website Preview -->
+<meta property="og:title" content="VibeTok | Share Your World">
+<meta property="og:description" content="Discover, watch and share amazing videos on VibeTok.">
+<meta property="og:image" content="preview.jpg">
+<meta property="og:url" content="https://your-vibetok-site.vercel.app">
+<meta property="og:type" content="website">
+
+<!-- WhatsApp / Facebook -->
+<meta property="og:site_name" content="VibeTok">
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="VibeTok | Share Your World">
+<meta name="twitter:description" content="Discover, watch and share amazing videos on VibeTok.">
+<meta name="twitter:image" content="preview.jpg">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Link Preview -->
+    <meta property="og:title" content="VibeTok | Share Your World">
+    <meta property="og:description"
+          content="Discover, watch and share amazing videos on VibeTok.">
+    <meta property="og:image" content="preview.jpg">
+    <meta property="og:type" content="website">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            color: #fff;
+        }
+
+        /* =========================
+           TOP NAVBAR
+        ========================= */
+
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 35px;
+            background: linear-gradient(
+                to bottom,
+                rgba(0,0,0,.85),
+                rgba(0,0,0,0)
+            );
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+
+        .logo i {
+            color: #fe2c55;
+        }
+
+        .search-box {
+            width: 330px;
+            height: 43px;
+            background: rgba(255,255,255,.12);
+            border: 1px solid rgba(255,255,255,.15);
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-box i {
+            color: #aaa;
+            margin-right: 10px;
+        }
+
+        .search-box input {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: white;
+            font-size: 14px;
+        }
+
+        .search-box input::placeholder {
+            color: #aaa;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .top-actions button {
+            border: none;
+            cursor: pointer;
+            color: white;
+            background: transparent;
+            font-size: 21px;
+        }
+
+        .upload-top {
+            background: white !important;
+            color: #111 !important;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px !important;
+        }
+
+        .live-top {
+            background: #fe2c55 !important;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px !important;
+        }
+
+        /* =========================
+           VIDEO FEED
+        ========================= */
+
+        .feed {
+            width: 100%;
+            height: 100vh;
+            overflow-y: auto;
+            scroll-snap-type: y mandatory;
+            scrollbar-width: none;
+        }
+
+        .feed::-webkit-scrollbar {
+            display: none;
+        }
+
+        .video-card {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            scroll-snap-align: start;
+            background: #080808;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .video-card video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #000;
+        }
+
+        /* Dark overlay */
+        .video-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(
+                to top,
+                rgba(0,0,0,.85),
+                transparent 45%,
+                rgba(0,0,0,.12)
+            );
+        }
+
+        /* =========================
+           VIDEO INFORMATION
+        ========================= */
+
+        .video-info {
+            position: absolute;
+            left: 30px;
+            bottom: 85px;
+            width: min(600px, 70%);
+            z-index: 5;
+        }
+
+        .user-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .avatar {
+            width: 43px;
+            height: 43px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #fe2c55, #25f4ee);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 2px solid white;
+        }
+
+        .username {
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .follow {
+            border: 1px solid white;
+            background: transparent;
+            color: white;
+            padding: 5px 13px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .follow.following {
+            background: white;
+            color: black;
+        }
+
+        .caption {
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 9px;
+        }
+
+        .music {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 14px;
+        }
+
+        /* =========================
+           SIDE ACTIONS
+        ========================= */
+
+        .actions {
+            position: absolute;
+            right: 28px;
+            bottom: 90px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 19px;
+        }
+
+        .action {
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .action button {
+            width: 52px;
+            height: 52px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(30,30,30,.75);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 23px;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .action button:hover {
+            transform: scale(1.1);
+        }
+
+        .action span {
+            display: block;
+            margin-top: 5px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .like-btn.liked {
+            color: #fe2c55;
+        }
+
+        .like-btn.liked i {
+            animation: pop .25s ease;
+        }
+
+        @keyframes pop {
+            50% {
+                transform: scale(1.4);
+            }
+        }
+
+        /* =========================
+           SOUND BUTTON
+        ========================= */
+
+        .sound {
+            position: absolute;
+            top: 90px;
+            right: 30px;
+            z-index: 10;
+        }
+
+        .sound button {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0,0,0,.55);
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        /* =========================
+           BOTTOM NAVIGATION
+        ========================= */
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 65px;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 70px;
+            background: rgba(0,0,0,.92);
+            border-top: 1px solid rgba(255,255,255,.1);
+        }
+
+        .nav-item {
+            color: #aaa;
+            text-align: center;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .nav-item i {
+            display: block;
+            font-size: 21px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item.active {
+            color: white;
+        }
+
+        .create-btn {
+            width: 48px;
+            height: 34px;
+            border-radius: 9px;
+            border: none;
+            background: white;
+            color: black;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* =========================
+           MODALS
+        ========================= */
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.75);
+            backdrop-filter: blur(10px);
+            z-index: 500;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-box {
+            width: min(500px, 100%);
+            background: #181818;
+            border-radius: 18px;
+            padding: 25px;
+            box-shadow: 0 20px 70px rgba(0,0,0,.7);
+        }
+
+        .modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-head h2 {
+            font-size: 21px;
+        }
+
+        .close {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Upload */
+
+        .upload-area {
+            border: 2px dashed #555;
+            border-radius: 15px;
+            padding: 45px 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #fe2c55;
+        }
+
+        .upload-area i {
+            font-size: 45px;
+            color: #fe2c55;
+            margin-bottom: 15px;
+        }
+
+        .upload-area p {
+            color: #aaa;
+            margin-top: 8px;
+        }
+
+        #videoInput {
+            display: none;
+        }
+
+        .publish-btn {
+            width: 100%;
+            border: none;
+            background: #fe2c55;
+            color: white;
+            padding: 13px;
+            border-radius: 8px;
+            margin-top: 18px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        /* Live */
+
+        .live-preview {
+            width: 100%;
+            height: 400px;
+            background: black;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .live-status {
+            text-align: center;
+            margin: 12px 0;
+            color: #fe2c55;
+            font-weight: bold;
+        }
+
+        .live-btn {
+            width: 100%;
+            border: none;
+            padding: 13px;
+            border-radius: 8px;
+            background: #fe2c55;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Comments */
+
+        .comments-list {
+            height: 250px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+
+        .comment {
+            padding: 12px 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .comment strong {
+            margin-right: 5px;
+        }
+
+        .comment-form {
+            display: flex;
+            gap: 8px;
+        }
+
+        .comment-form input {
+            flex: 1;
+            background: #292929;
+            border: none;
+            outline: none;
+            padding: 12px;
+            border-radius: 7px;
+            color: white;
+        }
+
+        .comment-form button {
+            border: none;
+            background: #fe2c55;
+            color: white;
+            border-radius: 7px;
+            padding: 0 15px;
+            cursor: pointer;
+        }
+
+        /* =========================
+           SEARCH RESULT
+        ========================= */
+
+        .no-results {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            text-align: center;
+        }
+
+        .no-results.show {
+            display: flex;
+        }
+
+        .no-results i {
+            font-size: 55px;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .no-results h2 {
+            margin-bottom: 8px;
+        }
+
+        .no-results p {
+            color: #888;
+        }
+
+        /* =========================
+           TOAST
+        ========================= */
+
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 90px;
+            transform: translateX(-50%) translateY(30px);
+            background: white;
+            color: black;
+            padding: 12px 20px;
+            border-radius: 25px;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: .3s;
+            font-size: 14px;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 700px) {
+
+            .topbar {
+                padding: 0 15px;
+                height: 60px;
+            }
+
+            .logo {
+                font-size: 22px;
+            }
+
+            .search-box {
+                width: 42px;
+                padding: 0;
+                justify-content: center;
+                border: none;
+                background: transparent;
+            }
+
+            .search-box input {
+                display: none;
+            }
+
+            .search-box i {
+                margin: 0;
+                font-size: 21px;
+                color: white;
+            }
+
+            .top-actions {
+                gap: 9px;
+            }
+
+            .upload-top,
+            .live-top {
+                padding: 8px 10px;
+                font-size: 11px !important;
+            }
+
+            .top-actions button:not(.upload-top):not(.live-top) {
+                display: none;
+            }
+
+            .video-card video {
+                object-fit: cover;
+            }
+
+            .video-info {
+                left: 15px;
+                bottom: 80px;
+                width: 75%;
+            }
+
+            .actions {
+                right: 12px;
+                bottom: 85px;
+                gap: 14px;
+            }
+
+            .action button {
+                width: 45px;
+                height: 45px;
+                font-size: 19px;
+            }
+
+            .sound {
+                right: 15px;
+                top: 72px;
+            }
+
+            .bottom-nav {
+                height: 62px;
+                gap: 0;
+                justify-content: space-around;
+            }
+
+            .nav-item i {
+                font-size: 19px;
+            }
+
+            .nav-item {
+                font-size: 10px;
+            }
+
+            .live-preview {
+                height: 320px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- =========================
+     TOP BAR
+========================= -->
+
+<header class="topbar">
+
+    <div class="logo">
+        <i class="fa-brands fa-tiktok"></i>
+        VibeTok
+    </div>
+
+    <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search videos, creators..."
+        >
+    </div>
+
+    <div class="top-actions">
+
+        <button class="upload-top" onclick="openUpload()">
+            <i class="fa-solid fa-plus"></i>
+            Upload
+        </button>
+
+        <button class="live-top" onclick="openLive()">
+            <i class="fa-solid fa-circle"></i>
+            LIVE
+        </button>
+
+        <button>
+            <i class="fa-regular fa-message"></i>
+        </button>
+
+        <button>
+            <i class="fa-regular fa-user"></i>
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- =========================
+     VIDEO FEED
+========================= -->
+
+<main class="feed" id="feed">
+
+    <!-- VIDEO 1 -->
+
+    <section class="video-card"
+        data-search="technology coding website development programming">
+
+        <video src="video1.mp4"
+               loop
+               muted
+               playsinline
+               preload="metadata"></video>
+
+        <div class="sound">
+            <button onclick="toggleSound(this)">
+                <i class="fa-solid fa-volume-xmark"></i>
+            </button>
+        </div>
+
+        <div class="video-info">
+
+            <div class="user-row">
+                <div class="avatar">CM</div>
+
+                <span class="username">@cherishedmhe</span>
+
+                <button class="follow"
+                        onclick="followUser(this)">
+                    Follow
+                </button>
+            </div>
+
+            <p class="caption">
+                Building something amazing with technology 💻🔥
+                #coding #webdevelopment #vibetok
+            </p>
+
+            <div class="music">
+                <i class="fa-solid fa-music"></i>
+                Original sound - Cherished Mhe
+            </div>
+
+        </div>
+
+        <div class="actions">
+
+            <div class="action">
+                <button class="like-btn"
+                        onclick="likeVideo(this)">
+                    <i class="fa-solid fa-heart"></i>
+                </button>
+                <span class="like-count">1.2K</span>
+            </div>
+
+            <div class="action">
+                <button onclick="openComments()">
+                    <i class="fa-solid fa-comment"></i>
+                </button>
+                <span>89</span>
+            </div>
+
+            <div class="action">
+                <button onclick="shareVideo()">
+                    <i class="fa-solid fa-share"></i>
+                </button>
+                <span>Share</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- VIDEO 2 -->
+
+    <section class="video-card"
+        data-search="funny comedy entertainment viral">
+
+        <video src="video2.mp4"
+               loop
+               muted
+               playsinline
+               preload="metadata"></video>
+
+        <div class="sound">
+            <button onclick="toggleSound(this)">
+                <i class="fa-solid fa-volume-xmark"></i>
+            </button>
+        </div>
+
+        <div class="video-info">
+
+            <div class="user-row">
+                <div class="avatar">AJ</div>
+                <span class="username">@ajvibes</span>
+
+                <button class="follow"
+                        onclick="followUser(this)">
+                    Follow
+                </button>
+            </div>
+
+            <p class="caption">
+                This one really got me 😂😂
+                #funny #viral #fyp
+            </p>
+
+            <div class="music">
+                <i class="fa-solid fa-music"></i>
+                Trending sound
+            </div>
+
+        </div>
+
+        <div class="actions">
+
+            <div class="action">
+                <button class="like-btn"
+                        onclick="likeVideo(this)">
+                    <i class="fa-solid fa-heart"></i>
+                </button>
+                <span class="like-count">4.8K</span>
+            </div>
+
+            <div class="action">
+                <button onclick="openComments()">
+                    <i class="fa-solid fa-comment"></i>
+                </button>
+                <span>221</span>
+            </div>
+
+            <div class="action">
+                <button onclick="shareVideo()">
+                    <i class="fa-solid fa-share"></i>
+                </button>
+                <span>Share</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- VIDEO 3 -->
+
+    <section class="video-card"
+        data-search="fashion style clothes outfit lifestyle">
+
+        <video src="video3.mp4"
+               loop
+               muted
+               playsinline
+               preload="metadata"></video>
+
+        <div class="sound">
+            <button onclick="toggleSound(this)">
+                <i class="fa-solid fa-volume-xmark"></i>
+            </button>
+        </div>
+
+        <div class="video-info">
+
+            <div class="user-row">
+                <div class="avatar">FS</div>
+                <span class="username">@fashionstyle</span>
+
+                <button class="follow"
+                        onclick="followUser(this)">
+                    Follow
+                </button>
+            </div>
+
+            <p class="caption">
+                Simple outfit, clean look ✨
+                #fashion #style #outfit
+            </p>
+
+            <div class="music">
+                <i class="fa-solid fa-music"></i>
+                Fashion vibes
+            </div>
+
+        </div>
+
+        <div class="actions">
+
+            <div class="action">
+                <button class="like-btn"
+                        onclick="likeVideo(this)">
+                    <i class="fa-solid fa-heart"></i>
+                </button>
+                <span class="like-count">8.1K</span>
+            </div>
+
+            <div class="action">
+                <button onclick="openComments()">
+                    <i class="fa-solid fa-comment"></i>
+                </button>
+                <span>410</span>
+            </div>
+
+            <div class="action">
+                <button onclick="shareVideo()">
+                    <i class="fa-solid fa-share"></i>
+                </button>
+                <span>Share</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- VIDEO 4 -->
+
+    <section class="video-card"
+        data-search="music dance entertainment performance">
+
+        <video src="video4.mp4"
+               loop
+               muted
+               playsinline
+               preload="metadata"></video>
+
+        <div class="sound">
+            <button onclick="toggleSound(this)">
+                <i class="fa-solid fa-volume-xmark"></i>
+            </button>
+        </div>
+
+        <div class="video-info">
+
+            <div class="user-row">
+                <div class="avatar">DV</div>
+                <span class="username">@dancevibes</span>
+
+                <button class="follow"
+                        onclick="followUser(this)">
+                    Follow
+                </button>
+            </div>
+
+            <p class="caption">
+                When the beat drops 🔥🔥
+                #dance #music #viral
+            </p>
+
+            <div class="music">
+                <i class="fa-solid fa-music"></i>
+                Trending music
+            </div>
+
+        </div>
+
+        <div class="actions">
+
+            <div class="action">
+                <button class="like-btn"
+                        onclick="likeVideo(this)">
+                    <i class="fa-solid fa-heart"></i>
+                </button>
+                <span class="like-count">12K</span>
+            </div>
+
+            <div class="action">
+                <button onclick="openComments()">
+                    <i class="fa-solid fa-comment"></i>
+                </button>
+                <span>531</span>
+            </div>
+
+            <div class="action">
+                <button onclick="shareVideo()">
+                    <i class="fa-solid fa-share"></i>
+                </button>
+                <span>Share</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- VIDEO 5 -->
+
+    <section class="video-card"
+        data-search="travel nature adventure holiday">
+
+        <video src="video5.mp4"
+               loop
+               muted
+               playsinline
+               preload="metadata"></video>
+
+        <div class="sound">
+            <button onclick="toggleSound(this)">
+                <i class="fa-solid fa-volume-xmark"></i>
+            </button>
+        </div>
+
+        <div class="video-info">
+
+            <div class="user-row">
+                <div class="avatar">TR</div>
+                <span class="username">@travelworld</span>
+
+                <button class="follow"
+                        onclick="followUser(this)">
+                    Follow
+                </button>
+            </div>
+
+            <p class="caption">
+                Somewhere beautiful 🌍❤️
+                #travel #nature #adventure
+            </p>
+
+            <div class="music">
+                <i class="fa-solid fa-music"></i>
+                Travel sound
+            </div>
+
+        </div>
+
+        <div class="actions">
+
+            <div class="action">
+                <button class="like-btn"
+                        onclick="likeVideo(this)">
+                    <i class="fa-solid fa-heart"></i>
+                </button>
+                <span class="like-count">3.4K</span>
+            </div>
+
+            <div class="action">
+                <button onclick="openComments()">
+                    <i class="fa-solid fa-comment"></i>
+                </button>
+                <span>120</span>
+            </div>
+
+            <div class="action">
+                <button onclick="shareVideo()">
+                    <i class="fa-solid fa-share"></i>
+                </button>
+                <span>Share</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- VIDEO 6 -->
+
+    <section class="video-card"
+        data-search="food cooking restaurant recipe">
+
+        <video src="video6.mp4"
+               loop
+               muted
+               playsinline
+               preload="metadata"></video>
+
+        <div class="sound">
+            <button onclick="toggleSound(this)">
+                <i class="fa-solid fa-volume-xmark"></i>
+            </button>
+        </div>
+
+        <div class="video-info">
+
+            <div class="user-row">
+                <div class="avatar">FD</div>
+                <span class="username">@fooddaily</span>
+
+                <button class="follow"
+                        onclick="followUser(this)">
+                    Follow
+                </button>
+            </div>
+
+            <p class="caption">
+                Food that deserves a replay 🤤🔥
+                #food #cooking #recipe
+            </p>
+
+            <div class="music">
+                <i class="fa-solid fa-music"></i>
+                Original sound
+            </div>
+
+        </div>
+
+        <div class="actions">
+
+            <div class="action">
+                <button class="like-btn"
+                        onclick="likeVideo(this)">
+                    <i class="fa-solid fa-heart"></i>
+                </button>
+                <span class="like-count">6.7K</span>
+            </div>
+
+            <div class="action">
+                <button onclick="openComments()">
+                    <i class="fa-solid fa-comment"></i>
+                </button>
+                <span>298</span>
+            </div>
+
+            <div class="action">
+                <button onclick="shareVideo()">
+                    <i class="fa-solid fa-share"></i>
+                </button>
+                <span>Share</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- VIDEO 7 -->
+
+    <section class="video-card"
+        data-search="cars luxury automobile mercedes">
+
+        <video src="video7.mp4"
+               loop
+               muted
+               playsinline
+               preload="metadata"></video>
+
+        <div class="sound">
+            <button onclick="toggleSound(this)">
+                <i class="fa-solid fa-volume-xmark"></i>
+            </button>
+        </div>
+
+        <div class="video-info">
+
+            <div class="user-row">
+                <div class="avatar">CA</div>
+                <span class="username">@carspot</span>
+
+                <button class="follow"
+                        onclick="followUser(this)">
+                    Follow
+                </button>
+            </div>
+
+            <p class="caption">
+                Luxury never goes out of style 🚘🔥
+                #cars #luxury #automobile
+            </p>
+
+            <div class="music">
+                <i class="fa-solid fa-music"></i>
+                Car vibes
+            </div>
+
+        </div>
+
+        <div class="actions">
+
+            <div class="action">
+                <button class="like-btn"
+                        onclick="likeVideo(this)">
+                    <i class="fa-solid fa-heart"></i>
+                </button>
+                <span class="like-count">9.3K</span>
+            </div>
+
+            <div class="action">
+                <button onclick="openComments()">
+                    <i class="fa-solid fa-comment"></i>
+                </button>
+                <span>345</span>
+            </div>
+
+            <div class="action">
+                <button onclick="shareVideo()">
+                    <i class="fa-solid fa-share"></i>
+                </button>
+                <span>Share</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- VIDEO 8 -->
+
+    <section class="video-card"
+        data-search="football sport soccer goals">
+
+        <video src="video8.mp4"
+               loop
+               muted
+               playsinline
+               preload="metadata"></video>
+
+        <div class="sound">
+            <button onclick="toggleSound(this)">
+                <i class="fa-solid fa-volume-xmark"></i>
+            </button>
+        </div>
+
+        <div class="video-info">
+
+            <div class="user-row">
+                <div class="avatar">SP</div>
+                <span class="username">@sportzone</span>
+
+                <button class="follow"
+                        onclick="followUser(this)">
+                    Follow
+                </button>
+            </div>
+
+            <p class="caption">
+                What a goal! ⚽🔥
+                #football #sport #soccer
+            </p>
+
+            <div class="music">
+                <i class="fa-solid fa-music"></i>
+                Stadium sound
+            </div>
+
+        </div>
+
+        <div class="actions">
+
+            <div class="action">
+                <button class="like-btn"
+                        onclick="likeVideo(this)">
+                    <i class="fa-solid fa-heart"></i>
+                </button>
+                <span class="like-count">15K</span>
+            </div>
+
+            <div class="action">
+                <button onclick="openComments()">
+                    <i class="fa-solid fa-comment"></i>
+                </button>
+                <span>620</span>
+            </div>
+
+            <div class="action">
+                <button onclick="shareVideo()">
+                    <i class="fa-solid fa-share"></i>
+                </button>
+                <span>Share</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- VIDEO 9 -->
+
+    <section class="video-card"
+        data-search="technology artificial intelligence ai future">
+
+        <video src="video9.mp4"
+               loop
+               muted
+               playsinline
+               preload="metadata"></video>
+
+        <div class="sound">
+            <button onclick="toggleSound(this)">
+                <i class="fa-solid fa-volume-xmark"></i>
+            </button>
+        </div>
+
+        <div class="video-info">
+
+            <div class="user-row">
+                <div class="avatar">AI</div>
+                <span class="username">@futuretech</span>
+
+                <button class="follow"
+                        onclick="followUser(this)">
+                    Follow
+                </button>
+            </div>
+
+            <p class="caption">
+                The future is already here 🤖🚀
+                #technology #AI #future
+            </p>
+
+            <div class="music">
+                <i class="fa-solid fa-music"></i>
+                Future sound
+            </div>
+
+        </div>
+
+        <div class="actions">
+
+            <div class="action">
+                <button class="like-btn"
+                        onclick="likeVideo(this)">
+                    <i class="fa-solid fa-heart"></i>
+                </button>
+                <span class="like-count">7.5K</span>
+            </div>
+
+            <div class="action">
+                <button onclick="openComments()">
+                    <i class="fa-solid fa-comment"></i>
+                </button>
+                <span>188</span>
+            </div>
+
+            <div class="action">
+                <button onclick="shareVideo()">
+                    <i class="fa-solid fa-share"></i>
+                </button>
+                <span>Share</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- VIDEO 10 -->
+
+    <section class="video-card"
+        data-search="lifestyle motivation success inspiration">
+
+        <video src="video10.mp4"
+               loop
+               muted
+               playsinline
+               preload="metadata"></video>
+
+        <div class="sound">
+            <button onclick="toggleSound(this)">
+                <i class="fa-solid fa-volume-xmark"></i>
+            </button>
+        </div>
+
+        <div class="video-info">
+
+            <div class="user-row">
+                <div class="avatar">MV</div>
+                <span class="username">@motivationdaily</span>
+
+                <button class="follow"
+                        onclick="followUser(this)">
+                    Follow
+                </button>
+            </div>
+
+            <p class="caption">
+                Keep going. Your time is coming. ❤️
+                #motivation #success #mindset
+            </p>
+
+            <div class="music">
+                <i class="fa-solid fa-music"></i>
+                Motivational sound
+            </div>
+
+        </div>
+
+        <div class="actions">
+
+            <div class="action">
+                <button class="like-btn"
+                        onclick="likeVideo(this)">
+                    <i class="fa-solid fa-heart"></i>
+                </button>
+                <span class="like-count">5.9K</span>
+            </div>
+
+            <div class="action">
+                <button onclick="openComments()">
+                    <i class="fa-solid fa-comment"></i>
+                </button>
+                <span>203</span>
+            </div>
+
+            <div class="action">
+                <button onclick="shareVideo()">
+                    <i class="fa-solid fa-share"></i>
+                </button>
+                <span>Share</span>
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- =========================
+     BOTTOM NAV
+========================= -->
+
+<nav class="bottom-nav">
+
+    <div class="nav-item active">
+        <i class="fa-solid fa-house"></i>
+        Home
+    </div>
+
+    <div class="nav-item">
+        <i class="fa-solid fa-compass"></i>
+        Discover
+    </div>
+
+    <button class="create-btn" onclick="openUpload()">
+        <i class="fa-solid fa-plus"></i>
+    </button>
+
+    <div class="nav-item">
+        <i class="fa-regular fa-message"></i>
+        Inbox
+    </div>
+
+    <div class="nav-item">
+        <i class="fa-regular fa-user"></i>
+        Profile
+    </div>
+
+</nav>
+
+
+<!-- =========================
+     UPLOAD MODAL
+========================= -->
+
+<div class="modal" id="uploadModal">
+
+    <div class="modal-box">
+
+        <div class="modal-head">
+
+            <h2>Create a Video</h2>
+
+            <button class="close"
+                    onclick="closeModal('uploadModal')">
+                ×
+            </button>
+
+        </div>
+
+        <label class="upload-area" for="videoInput">
+
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+
+            <h3>Upload your video</h3>
+
+            <p>Choose a video from your computer</p>
+
+        </label>
+
+        <input
+            type="file"
+            id="videoInput"
+            accept="video/*"
+            onchange="previewUpload(event)"
+        >
+
+        <video
+            id="uploadPreview"
+            style="display:none;width:100%;margin-top:15px;border-radius:10px;"
+            controls>
+        </video>
+
+        <button class="publish-btn"
+                onclick="publishVideo()">
+            Publish Video
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     LIVE MODAL
+========================= -->
+
+<div class="modal" id="liveModal">
+
+    <div class="modal-box">
+
+        <div class="modal-head">
+
+            <h2>🔴 Go LIVE</h2>
+
+            <button class="close"
+                    onclick="closeLive()">
+                ×
+            </button>
+
+        </div>
+
+        <video
+            id="liveVideo"
+            class="live-preview"
+            autoplay
+            muted>
+        </video>
+
+        <div class="live-status" id="liveStatus">
+            Camera is ready
+        </div>
+
+        <button
+            class="live-btn"
+            id="startLiveBtn"
+            onclick="startLive()">
+
+            <i class="fa-solid fa-video"></i>
+            Start LIVE
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     COMMENTS MODAL
+========================= -->
+
+<div class="modal" id="commentsModal">
+
+    <div class="modal-box">
+
+        <div class="modal-head">
+
+            <h2>Comments</h2>
+
+            <button class="close"
+                    onclick="closeModal('commentsModal')">
+                ×
+            </button>
+
+        </div>
+
+        <div class="comments-list" id="commentsList">
+
+            <div class="comment">
+                <strong>@alice</strong>
+                This is amazing 🔥
+            </div>
+
+            <div class="comment">
+                <strong>@joshua</strong>
+                Nice video!
+            </div>
+
+            <div class="comment">
+                <strong>@deborah</strong>
+                I love this ❤️
+            </div>
+
+        </div>
+
+        <form class="comment-form"
+              onsubmit="addComment(event)">
+
+            <input
+                id="commentInput"
+                placeholder="Add a comment..."
+                required>
+
+            <button>
+                Post
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- NO SEARCH RESULTS -->
+
+<div class="no-results" id="noResults">
+
+    <div>
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        <h2>No videos found</h2>
+
+        <p>Try searching for something else.</p>
+
+    </div>
+
+</div>
+
+
+<!-- TOAST -->
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+
+    /* =========================
+       VIDEO AUTOPLAY
+    ========================= */
+
+    const videos = document.querySelectorAll(".video-card video");
+
+    const observer = new IntersectionObserver((entries) => {
+
+        entries.forEach(entry => {
+
+            const video = entry.target;
+
+            if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
+
+                videos.forEach(otherVideo => {
+
+                    if (otherVideo !== video) {
+                        otherVideo.pause();
+                    }
+
+                });
+
+                video.play().catch(() => {});
+
+            } else {
+
+                video.pause();
+
+            }
+
+        });
+
+    }, {
+        threshold: [0.6]
+    });
+
+
+    videos.forEach(video => {
+        observer.observe(video);
+
+        video.addEventListener("click", () => {
+
+            if (video.paused) {
+                video.play();
+            } else {
+                video.pause();
+            }
+
+        });
+
+    });
+
+
+    /* =========================
+       LIKE
+    ========================= */
+
+    function likeVideo(button) {
+
+        button.classList.toggle("liked");
+
+        const count = button
+            .parentElement
+            .querySelector(".like-count");
+
+        if (button.classList.contains("liked")) {
+
+            button.querySelector("i").className =
+                "fa-solid fa-heart";
+
+            showToast("❤️ Liked");
+
+        } else {
+
+            showToast("Like removed");
+
+        }
+
+    }
+
+
+    /* =========================
+       SOUND
+    ========================= */
+
+    function toggleSound(button) {
+
+        const card = button.closest(".video-card");
+        const video = card.querySelector("video");
+
+        video.muted = !video.muted;
+
+        if (video.muted) {
+
+            button.innerHTML =
+                '<i class="fa-solid fa-volume-xmark"></i>';
+
+        } else {
+
+            button.innerHTML =
+                '<i class="fa-solid fa-volume-high"></i>';
+
+        }
+
+    }
+
+
+    /* =========================
+       FOLLOW
+    ========================= */
+
+    function followUser(button) {
+
+        button.classList.toggle("following");
+
+        if (button.classList.contains("following")) {
+
+            button.textContent = "Following";
+
+            showToast("You're now following this creator");
+
+        } else {
+
+            button.textContent = "Follow";
+
+        }
+
+    }
+
+
+    /* =========================
+       SEARCH
+    ========================= */
+
+    const searchInput =
+        document.getElementById("searchInput");
+
+    const cards =
+        document.querySelectorAll(".video-card");
+
+    const noResults =
+        document.getElementById("noResults");
+
+
+    searchInput.addEventListener("input", () => {
+
+        const search =
+            searchInput.value.toLowerCase().trim();
+
+        let found = false;
+
+        cards.forEach(card => {
+
+            const text =
+                card.innerText.toLowerCase() +
+                " " +
+                card.dataset.search.toLowerCase();
+
+            if (text.includes(search)) {
+
+                card.style.display = "flex";
+                found = true;
+
+            } else {
+
+                card.style.display = "none";
+
+            }
+
+        });
+
+
+        if (search !== "" && !found) {
+
+            noResults.classList.add("show");
+
+        } else {
+
+            noResults.classList.remove("show");
+
+        }
+
+    });
+
+
+    /* =========================
+       SHARE
+    ========================= */
+
+    async function shareVideo() {
+
+        const shareData = {
+
+            title: "VibeTok",
+
+            text: "Check out this video on VibeTok!",
+
+            url: window.location.href
+
+        };
+
+
+        if (navigator.share) {
+
+            try {
+
+                await navigator.share(shareData);
+
+            } catch (error) {
+
+                console.log(error);
+
+            }
+
+        } else {
+
+            navigator.clipboard.writeText(
+                window.location.href
+            );
+
+            showToast("Link copied!");
+
+        }
+
+    }
+
+
+    /* =========================
+       UPLOAD
+    ========================= */
+
+    function openUpload() {
+
+        document
+            .getElementById("uploadModal")
+            .classList.add("show");
+
+    }
+
+
+    function previewUpload(event) {
+
+        const file =
+            event.target.files[0];
+
+        if (!file) return;
+
+        const preview =
+            document.getElementById("uploadPreview");
+
+        preview.src =
+            URL.createObjectURL(file);
+
+        preview.style.display = "block";
+
+    }
+
+
+    function publishVideo() {
+
+        const input =
+            document.getElementById("videoInput");
+
+        if (!input.files.length) {
+
+            showToast("Please choose a video first");
+
+            return;
+
+        }
+
+        const file = input.files[0];
+
+        const url = URL.createObjectURL(file);
+
+        const newCard =
+            document.createElement("section");
+
+        newCard.className = "video-card";
+
+        newCard.dataset.search =
+            "my video upload cherished mhe";
+
+        newCard.innerHTML = `
+
+            <video
+                src="${url}"
+                loop
+                muted
+                playsinline
+                autoplay>
+            </video>
+
+            <div class="sound">
+
+                <button onclick="toggleSound(this)">
+                    <i class="fa-solid fa-volume-xmark"></i>
+                </button>
+
+            </div>
+
+            <div class="video-info">
+
+                <div class="user-row">
+
+                    <div class="avatar">CM</div>
+
+                    <span class="username">
+                        @cherishedmhe
+                    </span>
+
+                    <button class="follow following">
+                        Following
+                    </button>
+
+                </div>
+
+                <p class="caption">
+                    My latest video 🎬🔥
+                    #VibeTok #CherishedMhe
+                </p>
+
+                <div class="music">
+
+                    <i class="fa-solid fa-music"></i>
+
+                    Original sound - Cherished Mhe
+
+                </div>
+
+            </div>
+
+            <div class="actions">
+
+                <div class="action">
+
+                    <button
+                        class="like-btn"
+                        onclick="likeVideo(this)">
+
+                        <i class="fa-solid fa-heart"></i>
+
+                    </button>
+
+                    <span class="like-count">
+                        0
+                    </span>
+
+                </div>
+
+                <div class="action">
+
+                    <button onclick="openComments()">
+
+                        <i class="fa-solid fa-comment"></i>
+
+                    </button>
+
+                    <span>0</span>
+
+                </div>
+
+                <div class="action">
+
+                    <button onclick="shareVideo()">
+
+                        <i class="fa-solid fa-share"></i>
+
+                    </button>
+
+                    <span>Share</span>
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        document
+            .getElementById("feed")
+            .appendChild(newCard);
+
+
+        observer.observe(
+            newCard.querySelector("video")
+        );
+
+
+        closeModal("uploadModal");
+
+        showToast("🎬 Your video was added!");
+
+        newCard.scrollIntoView({
+            behavior: "smooth"
+        });
+
+    }
+
+
+    /* =========================
+       LIVE CAMERA
+    ========================= */
+
+    let liveStream = null;
+
+
+    async function openLive() {
+
+        document
+            .getElementById("liveModal")
+            .classList.add("show");
+
+
+        try {
+
+            liveStream =
+                await navigator.mediaDevices
+                .getUserMedia({
+                    video: true,
+                    audio: true
+                });
+
+
+            document
+                .getElementById("liveVideo")
+                .srcObject = liveStream;
+
+
+            document
+                .getElementById("liveStatus")
+                .textContent =
+                "Camera is ready";
+
+        } catch (error) {
+
+            document
+                .getElementById("liveStatus")
+                .textContent =
+                "Camera permission was denied.";
+
+        }
+
+    }
+
+
+    function startLive() {
+
+        const button =
+            document.getElementById("startLiveBtn");
+
+        const status =
+            document.getElementById("liveStatus");
+
+
+        if (button.dataset.live !== "true") {
+
+            button.dataset.live = "true";
+
+            button.innerHTML =
+                '<i class="fa-solid fa-stop"></i> End LIVE';
+
+            status.textContent =
+                "🔴 YOU ARE LIVE";
+
+            showToast("🔴 You are now LIVE!");
+
+        } else {
+
+            button.dataset.live = "false";
+
+            button.innerHTML =
+                '<i class="fa-solid fa-video"></i> Start LIVE';
+
+            status.textContent =
+                "LIVE ended";
+
+            stopCamera();
+
+        }
+
+    }
+
+
+    function closeLive() {
+
+        stopCamera();
+
+        document
+            .getElementById("liveModal")
+            .classList.remove("show");
+
+    }
+
+
+    function stopCamera() {
+
+        if (liveStream) {
+
+            liveStream
+                .getTracks()
+                .forEach(track => track.stop());
+
+            liveStream = null;
+
+        }
+
+    }
+
+
+    /* =========================
+       COMMENTS
+    ========================= */
+
+    function openComments() {
+
+        document
+            .getElementById("commentsModal")
+            .classList.add("show");
+
+    }
+
+
+    function addComment(event) {
+
+        event.preventDefault();
+
+        const input =
+            document.getElementById("commentInput");
+
+        const text =
+            input.value.trim();
+
+        if (!text) return;
+
+
+        const comment =
+            document.createElement("div");
+
+        comment.className = "comment";
+
+        comment.innerHTML = `
+            <strong>@you</strong>
+            ${escapeHTML(text)}
+        `;
+
+
+        document
+            .getElementById("commentsList")
+            .prepend(comment);
+
+
+        input.value = "";
+
+        showToast("Comment posted ❤️");
+
+    }
+
+
+    function escapeHTML(text) {
+
+        const div =
+            document.createElement("div");
+
+        div.textContent = text;
+
+        return div.innerHTML;
+
+    }
+
+
+    /* =========================
+       MODALS
+    ========================= */
+
+    function closeModal(id) {
+
+        document
+            .getElementById(id)
+            .classList.remove("show");
+
+    }
+
+
+    document.querySelectorAll(".modal")
+        .forEach(modal => {
+
+            modal.addEventListener("click", event => {
+
+                if (event.target === modal) {
+
+                    modal.classList.remove("show");
+
+                }
+
+            });
+
+        });
+
+
+    /* =========================
+       TOAST
+    ========================= */
+
+    let toastTimer;
+
+
+    function showToast(message) {
+
+        const toast =
+            document.getElementById("toast");
+
+        toast.textContent = message;
+
+        toast.classList.add("show");
+
+        clearTimeout(toastTimer);
+
+        toastTimer =
+            setTimeout(() => {
+
+                toast.classList.remove("show");
+
+            }, 2200);
+
+    }
+
+
+    /* =========================
+       START FIRST VIDEO
+    ========================= */
+
+    window.addEventListener("load", () => {
+
+        const firstVideo =
+            document.querySelector(".video-card video");
+
+        if (firstVideo) {
+
+            firstVideo.play().catch(() => {});
+
+        }
+
+    });
+
+</script>
+
+</body>
+</html>
